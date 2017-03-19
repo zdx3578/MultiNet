@@ -15,6 +15,7 @@ The model is designed as an encoder-decoder architecture. It utilizes one VGG en
 
 The code requires [Tensorflow 1.0](https://www.tensorflow.org/install/) as well as the following python libraries: 
 
+* python 2.7
 * matplotlib
 * numpy
 * Pillow
