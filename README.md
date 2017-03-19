@@ -40,6 +40,8 @@ Running the model using `demo.py` only requires you to perform step 1-3. Step 4 
 
 ### Getting started
 
+####  now  not need  export TV_DIR_RUNS="./RUNS"
+
 Run: `python demo.py --gpus 0 --input data/demo/um_000005.png` to obtain a prediction using [demo.png](data/demo/um_000005.png) as input.
 
 Run: `python evaluate.py` to evaluate a trained model. 

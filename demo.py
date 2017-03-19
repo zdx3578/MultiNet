@@ -51,6 +51,11 @@ flags = tf.app.flags
 FLAGS = flags.FLAGS
 
 sys.path.insert(1, 'incl')
+# added by ligh
+sys.path.append('submodules/KittiBox/submodules/')
+sys.path.append('submodules/KittiSeg/incl/')
+
+
 
 try:
     # Check whether setup was done correctly
@@ -81,16 +86,35 @@ weights_url = ("ftp://mi.eng.cam.ac.uk/"
 def maybe_download_and_extract(runs_dir):
     logdir = os.path.join(runs_dir, default_run)
 
-    if os.path.exists(logdir):
+    if not  os.path.exists(logdir):
         # weights are downloaded. Nothing to do
-        return
+        print ('mkdir')
+        print (logdir)
+        os.makedirs(logdir )
 
-    import zipfile
-    download_name = tv_utils.download(weights_url, runs_dir)
+        import zipfile
+        download_name = tv_utils.download(weights_url, runs_dir)
+        logging.info("Extracting MultiNet_pretrained.zip")
+        zipfile.ZipFile(download_name, 'r').extractall(runs_dir)
 
-    logging.info("Extracting MultiNet_pretrained.zip")
 
-    zipfile.ZipFile(download_name, 'r').extractall(runs_dir)
+
+    #from download_date.py
+    import  download_data as d 
+    data_dir, run_dir = d.get_pathes()
+    if not os.path.exists(data_dir):
+            os.makedirs(data_dir)
+
+    vgg_weights = os.path.join(data_dir, 'vgg16.npy')
+
+    # Download VGG DATA
+    if not os.path.exists(vgg_weights):
+        download_command = "wget {} -P {}".format(d.vgg_url, data_dir)
+        logging.info("Downloading VGG weights.")
+        d.download(d.vgg_url, data_dir)
+    else:
+        logging.warning("File: {} exists.".format(vgg_weights))
+        logging.warning("Please delete to redownload VGG weights.")
 
     return
 
@@ -390,7 +414,7 @@ def main(_):
 
     # Save output image file
     if FLAGS.output is None:
-        output_base_name = input
+        output_base_name = FLAGS.input
         out_image_name = output_base_name.split('.')[0] + '_out.png'
     else:
         out_image_name = FLAGS.output
